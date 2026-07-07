@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "387732297083",
+    "project_id": "expensemanager-d1d53",
+    "storage_bucket": "expensemanager-d1d53.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:387732297083:android:8fd024fbabbdef978a99de",
+        "android_client_info": {
+          "package_name": "com.example.expensemanager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpMoNQn0DawvfJcGYBZSJRHq1MZihiaiQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
