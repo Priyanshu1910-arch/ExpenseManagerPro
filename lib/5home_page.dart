@@ -1,7 +1,12 @@
+import 'package:expensemanager/0uihelper.dart';
+import 'package:expensemanager/6mainpage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:expensemanager/4.0login_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,6 +16,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  
+  String selectedCurrency = "INR - Indian Rupees";
+  
+  @override
+  void initState() {
+    super.initState();
+    loadCurrency();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,37 +49,41 @@ class _HomePageState extends State<HomePage> {
 
               ),
             ),
+
             SizedBox(height: 30),
+
             Text("Select base currency" ,style: TextStyle(fontSize: 23),),
 
-            SizedBox(height: 30,),
+            SizedBox(height: 15,),
 
-            DropdownButtonFormField<String>(
-              value: "INR",
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-
-              items: const [
-                DropdownMenuItem(
-                  value: "INR",
-                  child: Text("INR - Indian Rupee"),
-                ),
-                DropdownMenuItem(
-                  value: "USD",
-                  child: Text("USD - US Dollar"),
-                ),
-                DropdownMenuItem(
-                  value: "EUR",
-                  child: Text("EUR - Euro"),
-                ),
-              ],
-              onChanged: (value) {},
-            ),
+           Text(selectedCurrency, style: TextStyle(fontSize: 18 , color: Colors.grey),),
 
             SizedBox(height: 10,),
+
+             SizedBox(width: 350,
+
+               child: ElevatedButton(onPressed: () async{
+
+                  String? currency = await
+                      UiHelper.chooseCurrency(context, selectedCurrency);
+
+                  if(currency != null){
+
+                    setState(() {
+                      selectedCurrency = currency;
+                    });
+
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    await prefs.setString("finalcurrency", selectedCurrency);
+                  }
+
+
+               }, child: Text("Choose Currency")),
+
+             ),
+
+             SizedBox(height: 30,),
+
 
             Text(
               "Your base currency should ideally be the one you use most often. "
@@ -77,7 +95,29 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
+             SizedBox(height: 100,),
+            ElevatedButton(onPressed: (){
+              Navigator.push (context , MaterialPageRoute(builder: (context){
+                return MainPage();
+              }));
+            }, child: Text("NEXT")),
 
+
+            ElevatedButton(
+              onPressed: () async {
+                await addStudent();
+              },
+              child: Text("Add Student"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await getStudents(7);
+              },
+              child: Text("Add Student"),
+            ),
+
+
+            Text(selectedCurrency),
 
 
           ],
@@ -96,4 +136,62 @@ class _HomePageState extends State<HomePage> {
       return LoginPage();
     }));
   }
+
+  Future<void> loadCurrency() async {
+    var prefs = await SharedPreferences.getInstance();
+    var getCurrency = prefs.getString("finalcurrency");
+    setState(() {
+      selectedCurrency = getCurrency ?? selectedCurrency;
+    });
+  }
+
+  Future<void> addStudent() async {
+    final response = await http.post( Uri.parse("http://10.0.2.2:8080/addStudent"),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        // "name": "priyanshu",
+        // "mark": 90,
+        // "address1": "Delhi"
+        "currency": selectedCurrency,
+      }),
+    );
+
+    print(response.body);
+  }
+
+
+  Future<void> getStudents(int id) async {
+    try {
+      final response = await http.get(Uri.parse("http://10.0.2.2:8080/getDetailsById/$id"),
+      );
+
+      if (response.statusCode == 200) {
+       // print(response.body);
+
+     //   List data = jsonDecode(response.body);
+        Map<String, dynamic> student = jsonDecode(response.body);
+        print(student);
+        print(student["currency"]);
+
+        setState(() {
+          selectedCurrency = student["currency"];
+        });
+
+
+
+        // for (var student in data) {
+        //   print(student);
+        // }
+      }
+      else {
+        print("Error: ${response.statusCode}");
+      }
+    }
+    catch (e) {
+      print(e);
+    }
+  }
+
 }

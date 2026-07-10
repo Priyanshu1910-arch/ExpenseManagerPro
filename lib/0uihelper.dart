@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 
@@ -34,6 +35,79 @@ class UiHelper {
       );
     });
   }
+
+ static Future<String?> chooseCurrency ( BuildContext context , String selectedCurrency ) async {
+    String tempCurrency = selectedCurrency;
+    return await showDialog(context: context, builder: (context) {
+      return StatefulBuilder(builder:  (context , internalBuilder ){
+        return AlertDialog(
+
+          actions: [
+            TextButton(onPressed: (){
+              Navigator.pop(context);
+            }, child: const Text("Cancel")),
+            TextButton(onPressed: (){
+              Navigator.pop(context , tempCurrency);
+            }, child: const Text("OK")),
+          ],
+
+          title: const Text("Choose your currency"),
+          content: SizedBox(
+            height: 300, width: double.maxFinite,
+
+            child: ListView(
+              children: [
+
+                RadioGroup(
+                groupValue: tempCurrency,
+                    onChanged: (String? value) {
+                  internalBuilder((){
+                    tempCurrency = value!;
+                  });
+
+                },
+                    child: Column(
+                  children: const[
+                    RadioListTile(value: "INR" , title: Text("INR - Indian Rupee"),),
+                    RadioListTile(value: "USD" , title: Text("USD - US Dollar"),),
+                    RadioListTile(value: "EUR" , title: Text("EUR - Euro"),),
+                  ],
+                )
+
+
+                )
+
+              ],
+            ),
+          ),
+        );
+      });
+
+    });
+
+
+ }
+
+ static Widget TransactionTile ( IconData iconData , Color iconColor , String title , String amount  ){
+
+    return ListTile(
+
+      leading: CircleAvatar(
+          child: Icon(iconData , color: Colors.white,),
+            backgroundColor: iconColor
+      ),
+
+      title: Text(title),
+
+      trailing: Text(amount , style: TextStyle(fontSize: 18 , fontWeight: FontWeight.bold),),
+
+    );
+
+
+ }
+
+
+
 
 }
 
