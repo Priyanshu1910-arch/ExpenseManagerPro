@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:expensemanager/0uihelper.dart';
 import 'package:expensemanager/0uihelper.dart';
 import 'package:expensemanager/5home_page.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -13,6 +15,7 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
 
+  TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passController  = TextEditingController();
 
@@ -27,15 +30,42 @@ class _SignUpState extends State<SignUp> {
       try{
         usercredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email, password: password, );
-
-        Navigator.push( context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(),
-          ),
+        
+        User user = usercredential.user!;
+        
+        final response =  await http.post(
+          Uri.parse("http://10.0.2.2:8080/user"),
+          headers: {"Content-Type": "application/json",},
+          body: jsonEncode({
+             "firebaseUid" : user.uid,
+              "email" : user.email,
+              "name" : nameController.text,
+          }),
         );
+
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          print("User saved successfully");
+
+          Navigator.push( context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+
+        } else {
+          print("Failed to save user");
+          print(response.body);
+        }
+
+
       }
+
       on FirebaseAuthException catch(ex){
         return UiHelper.CustomAlertBox(context, ex.code.toString());
+      }
+
+      catch (e) {   // If Spring Boot is not running, http.post() can throw an exception.
+        UiHelper.CustomAlertBox(context, e.toString());
       }
 
     }
@@ -51,8 +81,9 @@ class _SignUpState extends State<SignUp> {
 
       body: Column(
           children: [
-            UiHelper.CustomTextField(emailController,"Email", Icons.mail, false),
-            UiHelper.CustomTextField(passController,"Password", Icons.password, true),
+            UiHelper.CustomTextField(controller:  nameController,hintText:  "Name",iconData:  Icons.person,toHide:  false),
+            UiHelper.CustomTextField(controller:  emailController,hintText:  "Email",iconData:  Icons.mail,toHide:  false),
+            UiHelper.CustomTextField(controller:  passController,hintText:  "Password",iconData:  Icons.password,toHide:  true),
             SizedBox(height: 20,),
 
             UiHelper.CustomButton( (){

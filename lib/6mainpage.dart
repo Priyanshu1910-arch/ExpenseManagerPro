@@ -1,17 +1,33 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expensemanager/0uihelper.dart';
+import 'package:expensemanager/8edit.dart';
 import 'package:flutter/material.dart';
 import 'package:expensemanager/7add.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class MainPage extends StatefulWidget {
 
-  const MainPage(  {super.key});
+
+  const MainPage(   {super.key});
 
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    getExpenses();
+  }
+
+  List < dynamic > expenses = [];
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,17 +152,37 @@ class _MainPageState extends State<MainPage> {
             const Divider(height: 2,),
 
             Expanded(
-              child: ListView.separated(itemBuilder: (context , index){
-                return UiHelper.TransactionTile(
-                    Icons.phone,
-                    Colors.black,
-                    "Phone",
-                    "100");
+              child: ListView.separated(itemBuilder: (context , index) {
+                final expense = expenses[index];
+                return InkWell(
+
+                  onTap: () async {
+                    final result = await
+                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      return EDIT( expense : expense);
+                    }));
+                    if ( result == true){
+                      await getExpenses();
+                    }
+                  },
+
+                  child: UiHelper.TransactionTile(
+                      IconData(
+                        expense["category"]["icon"],
+                        fontFamily: "MaterialIcons",
+                      ),
+                      Colors.black,
+                    expense["category"]["name"],
+                    //expense["description"],
+                    expense["amount"].toString(),),
+                );
               },
                   separatorBuilder: (context , index ){
                   return Divider(height: 30 , thickness: 2,);
-                  }, itemCount: 2),
+                  }, itemCount: expenses.length ),
             ),
+
+
 
             Container(
               color: Colors.white, height: 70,
@@ -181,10 +217,15 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                   InkWell(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context){
+                    onTap: () async {
+                    final id = await  Navigator.push(context, MaterialPageRoute(builder: (context){
                         return ADD();
-                      }));
+                       }), );
+
+                    if (id != null) {
+                      await getExpenses();
+                    }
+
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15 ),
@@ -197,6 +238,7 @@ class _MainPageState extends State<MainPage> {
                      ),
                     ),
                   ),
+
                   InkWell(
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15 , top: 10),
@@ -239,4 +281,28 @@ class _MainPageState extends State<MainPage> {
 
     );
   }
+
+  Future<void> getExpenses() async {
+    try {
+      final response = await http.get(Uri.parse("http://10.0.2.2:8080/expense"),
+      );
+
+
+      if (response.statusCode == 200) {
+
+        setState(() {
+          expenses = jsonDecode(response.body);
+        });
+
+      }
+      else {
+        print("Error: ${response.statusCode}");
+      }
+    }
+    catch (e) {
+      print(e);
+    }
+  }
+
+
 }

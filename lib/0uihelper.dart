@@ -4,15 +4,20 @@ import 'package:flutter/material.dart';
 
 class UiHelper {
 
-  static CustomTextField (  TextEditingController controller , String text , IconData iconData , bool toHide ){
+  static Widget CustomTextField ({ required TextEditingController controller , required String hintText , IconData ? iconData , bool toHide = false,
+      FocusNode? focusNode , TextInputType? keyboardType , TextInputAction? textInputAction , ValueChanged<String>? onSubmitted }) {
 
-    return Padding(padding: const EdgeInsets.symmetric(horizontal: 20 , vertical: 10),
+    return Padding(padding: const EdgeInsets.symmetric(horizontal: 20 , vertical: 2),
      child: TextField(
        controller: controller,
+       focusNode: focusNode,
        obscureText: toHide,
+       keyboardType: keyboardType,
+       textInputAction: textInputAction,
+       onSubmitted: onSubmitted,
 
        decoration: InputDecoration(
-         hintText: text , suffixIcon: Icon (iconData) , border: OutlineInputBorder(borderRadius:  BorderRadius.circular(25) ) ),
+         hintText: hintText  , suffixIcon: iconData != null ? Icon(iconData) : null , border: OutlineInputBorder(borderRadius:  BorderRadius.circular(25) ) ),
      ),
     );
   }
@@ -24,16 +29,31 @@ class UiHelper {
     );
   }
 
-  static CustomAlertBox ( BuildContext context  , String text) {
-    return showDialog(context: context, builder: (BuildContext context) {
-      return AlertDialog(title: Text(text),
-        actions: [ TextButton(onPressed: () {
-          Navigator.pop(context);
-        },
-            child: Text("OK"))
-        ],
-      );
-    });
+  static Future<void> CustomAlertBox(
+      BuildContext context,
+      String text, {
+        VoidCallback? onPressed,
+      }) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(text),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+
+                if (onPressed != null) {
+                  onPressed();
+                }
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
  static Future<String?> chooseCurrency ( BuildContext context , String selectedCurrency ) async {
@@ -105,6 +125,7 @@ class UiHelper {
 
 
  }
+
 
 
 

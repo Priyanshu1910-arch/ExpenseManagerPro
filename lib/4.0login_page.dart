@@ -76,8 +76,8 @@ class _LoginPageState extends State<LoginPage> {
                             style: TextStyle(fontSize: 25),),
                         ),
 
-                        UiHelper.CustomTextField(emailController,"Email", Icons.mail, false),
-                        UiHelper.CustomTextField(passController,"Password", Icons.password, true),
+                        UiHelper.CustomTextField(controller:  emailController, hintText: "Email", iconData:  Icons.mail,toHide:  false),
+                        UiHelper.CustomTextField(controller:  passController,hintText:  "Password",iconData:  Icons.password,toHide:  true),
                         SizedBox(height: 30,),
 
                         UiHelper.CustomButton( () {

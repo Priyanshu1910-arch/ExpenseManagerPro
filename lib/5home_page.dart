@@ -103,18 +103,7 @@ class _HomePageState extends State<HomePage> {
             }, child: Text("NEXT")),
 
 
-            ElevatedButton(
-              onPressed: () async {
-                await addStudent();
-              },
-              child: Text("Add Student"),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                await getStudents(7);
-              },
-              child: Text("Add Student"),
-            ),
+
 
 
             Text(selectedCurrency),
@@ -145,53 +134,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future<void> addStudent() async {
-    final response = await http.post( Uri.parse("http://10.0.2.2:8080/addStudent"),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: jsonEncode({
-        // "name": "priyanshu",
-        // "mark": 90,
-        // "address1": "Delhi"
-        "currency": selectedCurrency,
-      }),
-    );
-
-    print(response.body);
-  }
 
 
-  Future<void> getStudents(int id) async {
-    try {
-      final response = await http.get(Uri.parse("http://10.0.2.2:8080/getDetailsById/$id"),
-      );
-
-      if (response.statusCode == 200) {
-       // print(response.body);
-
-     //   List data = jsonDecode(response.body);
-        Map<String, dynamic> student = jsonDecode(response.body);
-        print(student);
-        print(student["currency"]);
-
-        setState(() {
-          selectedCurrency = student["currency"];
-        });
-
-
-
-        // for (var student in data) {
-        //   print(student);
-        // }
-      }
-      else {
-        print("Error: ${response.statusCode}");
-      }
-    }
-    catch (e) {
-      print(e);
-    }
-  }
 
 }
