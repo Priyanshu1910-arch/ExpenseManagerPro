@@ -25,53 +25,63 @@ class _MainPageState extends State<MainPage> {
     getExpenses();
   }
 
-  List < dynamic > expenses = [];
+  List <dynamic> expenses = [];
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
 
-    appBar: AppBar(
-      toolbarHeight: 30,
-      backgroundColor: Colors.grey.shade700,
-      leading: IconButton(onPressed: (){}, icon: Icon(Icons.menu) , color: Colors.black.withValues(alpha: 0.9),),
-      title: Text("Money Tracker" , style: TextStyle(fontWeight: FontWeight.bold),), centerTitle: true,
-      actions: [
-        IconButton(onPressed: (){}, icon: Icon(Icons.search) , color: Colors.black.withValues(alpha: 0.5),),
-        Padding(
-          padding: const EdgeInsets.only(right: 10),
-          child: IconButton(onPressed: (){}, icon: Icon(Icons.edit_calendar) , color: Colors.black.withValues(alpha: 0.5), ),
-        ),
-      ],
-    ),
+      appBar: AppBar(
+        toolbarHeight: 30,
+        backgroundColor: Colors.grey.shade700,
+        leading: IconButton(onPressed: () {},
+          icon: Icon(Icons.menu),
+          color: Colors.black.withValues(alpha: 0.9),),
+        title: Text(
+          "Money Tracker", style: TextStyle(fontWeight: FontWeight.bold),),
+        centerTitle: true,
+        actions: [
+          IconButton(onPressed: () {},
+            icon: Icon(Icons.search),
+            color: Colors.black.withValues(alpha: 0.5),),
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: IconButton(onPressed: () {},
+              icon: Icon(Icons.edit_calendar),
+              color: Colors.black.withValues(alpha: 0.5),),
+          ),
+        ],
+      ),
 
       body:
       Container(
-        color:  Colors.grey,
+        color: Colors.grey,
         child: Column(
 
           children: [
 
-             Container(height: 61, color: Colors.grey.shade700,  child:
+            Container(height: 61, color: Colors.grey.shade700, child:
             Row(
 
               children: [
                 InkWell(
-                  onTap: (){},
+                  onTap: () {},
                   child: Container(
                     width: 90,
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(right: 20 , top: 3 ),
-                          child: Text("2026" , style: TextStyle(fontSize: 20 , fontWeight: FontWeight.w600), ),
+                          padding: const EdgeInsets.only(right: 20, top: 3),
+                          child: Text("2026", style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w600),),
                         ),
                         Row(
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(left: 10),
-                              child: Text("JULY" , style: TextStyle(fontSize: 20 , fontWeight: FontWeight.w600), ),
+                              child: Text("JULY", style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w600),),
                             ),
                             Icon(Icons.keyboard_arrow_down),
                           ],
@@ -90,9 +100,10 @@ class _MainPageState extends State<MainPage> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(top: 3),
-                              child: Text("Expenses" , style: TextStyle(fontSize: 17 , fontWeight: FontWeight.w400 , ), ),
+                              child: Text("Expenses", style: TextStyle(
+                                fontSize: 17, fontWeight: FontWeight.w400,),),
                             ),
-                            Text("100" , style: TextStyle(fontSize: 20)),
+                            Text("100", style: TextStyle(fontSize: 20)),
                           ],
                         ),
                       ),
@@ -101,9 +112,10 @@ class _MainPageState extends State<MainPage> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(top: 3),
-                              child: Text("Income" , style: TextStyle(fontSize: 17 , fontWeight: FontWeight.w400),),
+                              child: Text("Income", style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w400),),
                             ),
-                            Text("100" , style: TextStyle(fontSize: 20  )),
+                            Text("100", style: TextStyle(fontSize: 20)),
                           ],
                         ),
                       ),
@@ -112,9 +124,10 @@ class _MainPageState extends State<MainPage> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(top: 3),
-                              child: Text("Balance" , style: TextStyle(fontSize: 17 , fontWeight: FontWeight.w400),),
+                              child: Text("Balance", style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w400),),
                             ),
-                            Text("100", style: TextStyle(fontSize: 20 ),),
+                            Text("100", style: TextStyle(fontSize: 20),),
                           ],
                         ),
                       ),
@@ -132,11 +145,13 @@ class _MainPageState extends State<MainPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row( children: [
-                      Text("Jul 8", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),),
-                      SizedBox(width: 5),
-                      Text("Wednesday", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),),
-                       ],
+                  Row(children: [
+                    Text("Jul 8", style: TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold,),),
+                    SizedBox(width: 5),
+                    Text("Wednesday", style: TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold,),),
+                  ],
                   ),
                   Row(
                     children: [
@@ -152,47 +167,83 @@ class _MainPageState extends State<MainPage> {
             const Divider(height: 2,),
 
             Expanded(
-              child: ListView.separated(itemBuilder: (context , index) {
+              child: ListView.separated(itemBuilder: (context, index) {
                 final expense = expenses[index];
-                return InkWell(
+                return GestureDetector(
 
                   onTap: () async {
                     final result = await
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return EDIT( expense : expense);
-                    }));
-                    if ( result == true){
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return EDIT(expense: expense);
+                        }));
+                    if (result == true) {
                       await getExpenses();
                     }
                   },
 
-                  child: UiHelper.TransactionTile(
-                      IconData(
-                        expense["category"]["icon"],
-                        fontFamily: "MaterialIcons",
+                  onLongPressStart: (details) {
+                    showMenu(
+                      context: context,
+                      position: RelativeRect.fromLTRB(
+                        details.globalPosition.dx,
+                        details.globalPosition.dy,
+                        details.globalPosition.dx,
+                        details.globalPosition.dy,
                       ),
-                      Colors.black,
+                      items: const [
+                        PopupMenuItem(
+                          value: "edit",
+                          child: Text("Edit"),
+                        ),
+                        PopupMenuItem(
+                          value: "delete",
+                          child: Text("Delete"),
+                        ),
+                      ],
+                    ).then((value) async {
+                      if (value == "edit") {
+                        final result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          return EDIT(expense: expense , openSheet: true,);
+                        }));
+
+                        if( result == true){
+                          await getExpenses();
+
+                        }
+                      } else if (value == "delete") {
+                        await deleteExpense(expense["id"]);
+                      }
+                    });
+                  },
+
+
+                  child: UiHelper.TransactionTile(
+                    IconData(
+                      expense["category"]["icon"],
+                      fontFamily: "MaterialIcons",
+                    ),
+                    Colors.black,
                     expense["category"]["name"],
                     //expense["description"],
                     expense["amount"].toString(),),
                 );
               },
-                  separatorBuilder: (context , index ){
-                  return Divider(height: 30 , thickness: 2,);
-                  }, itemCount: expenses.length ),
+                  separatorBuilder: (context, index) {
+                    return Divider(height: 30, thickness: 2,);
+                  }, itemCount: expenses.length),
             ),
-
 
 
             Container(
               color: Colors.white, height: 70,
-               child: 
+              child:
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 15 , top: 10),
+                      padding: const EdgeInsets.only(left: 15, top: 10),
                       child: Container(
                         child: Column(
                           children: [
@@ -205,7 +256,7 @@ class _MainPageState extends State<MainPage> {
                   ),
                   InkWell(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 15 , top: 10),
+                      padding: const EdgeInsets.only(left: 15, top: 10),
                       child: Container(
                         child: Column(
                           children: [
@@ -218,30 +269,30 @@ class _MainPageState extends State<MainPage> {
                   ),
                   InkWell(
                     onTap: () async {
-                    final id = await  Navigator.push(context, MaterialPageRoute(builder: (context){
+                      final id = await Navigator.push(
+                        context, MaterialPageRoute(builder: (context) {
                         return ADD();
-                       }), );
+                      }),);
 
-                    if (id != null) {
-                      await getExpenses();
-                    }
-
+                      if (id != null) {
+                        await getExpenses();
+                      }
                     },
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 15 ),
-                     child: CircleAvatar(
-                       radius: 35,
-                       backgroundColor: Colors.lightGreenAccent,
-                       child: Icon(
-                         Icons.add, color: Colors.black,
-                       ),
-                     ),
+                      padding: const EdgeInsets.only(left: 15),
+                      child: CircleAvatar(
+                        radius: 35,
+                        backgroundColor: Colors.lightGreenAccent,
+                        child: Icon(
+                          Icons.add, color: Colors.black,
+                        ),
+                      ),
                     ),
                   ),
 
                   InkWell(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 15 , top: 10),
+                      padding: const EdgeInsets.only(left: 15, top: 10),
                       child: Container(
                         child: Column(
                           children: [
@@ -254,7 +305,8 @@ class _MainPageState extends State<MainPage> {
                   ),
                   InkWell(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 15 , top: 10 , right: 15),
+                      padding: const EdgeInsets.only(
+                          left: 15, top: 10, right: 15),
                       child: Container(
                         child: Column(
                           children: [
@@ -265,7 +317,6 @@ class _MainPageState extends State<MainPage> {
                       ),
                     ),
                   ),
-
 
 
                 ],
@@ -289,11 +340,9 @@ class _MainPageState extends State<MainPage> {
 
 
       if (response.statusCode == 200) {
-
         setState(() {
           expenses = jsonDecode(response.body);
         });
-
       }
       else {
         print("Error: ${response.statusCode}");
@@ -303,6 +352,23 @@ class _MainPageState extends State<MainPage> {
       print(e);
     }
   }
+
+  Future<void> deleteExpense(int id) async {
+    final response = await http.delete(
+      Uri.parse(
+          "http://10.0.2.2:8080/expense/$id"),
+    );
+
+    if (response.statusCode == 200) {
+      print("Expense Deleted");
+
+    } else {
+      print("Delete Failed");
+      print(response.body);
+    }
+  }
+
+
 
 
 }

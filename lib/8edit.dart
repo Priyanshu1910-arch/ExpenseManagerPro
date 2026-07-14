@@ -6,8 +6,9 @@ import 'package:http/http.dart' as http;
 class EDIT extends StatefulWidget {
 
   final Map < String , dynamic > expense;
+  final bool openSheet;
 
-  const EDIT( {required this.expense  , super.key});
+  const EDIT( {required this.expense  , super.key ,  this.openSheet = false,});
 
   @override
   State<EDIT> createState() => _EDITState();
@@ -36,6 +37,12 @@ class _EDITState extends State<EDIT> {
 
     editController.text = widget.expense["amount"].toString();
     descriptionController.text = widget.expense["description"] ?? "";
+
+    if (widget.openSheet) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        openAmountSheet();
+      });
+    }
 
     super.initState();
   }
