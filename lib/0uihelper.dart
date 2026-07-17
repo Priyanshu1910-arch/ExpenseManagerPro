@@ -117,9 +117,9 @@ class UiHelper {
             backgroundColor: iconColor
       ),
 
-      title: Text(title),
+      title: Text(title ,style:  TextStyle( color: Colors.white,)),
 
-      trailing: Text(amount , style: TextStyle(fontSize: 18 , fontWeight: FontWeight.bold),),
+      trailing: Text(amount , style: TextStyle(fontSize: 18 , color: Colors.grey),),
 
     );
 

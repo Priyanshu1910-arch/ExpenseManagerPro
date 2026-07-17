@@ -279,6 +279,7 @@ class _ADDState extends State<ADD> {
             },
          "description" : descriptionController.text,
          "amount" : double.parse(amountController.text),
+          "type" : "Expense",
 
          "date": DateTime.now().toIso8601String().split("T")[0],
 
