@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expensemanager/0uihelper.dart';
+import 'package:expensemanager/10search.dart';
 import 'package:expensemanager/8edit.dart';
 import 'package:expensemanager/9calendar.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:expensemanager/9calendar.dart';
+import 'package:expensemanager/charts.dart';
 
 class MainPage extends StatefulWidget {
 
@@ -66,7 +68,16 @@ class _MainPageState extends State<MainPage> {
           "Money Tracker", style: TextStyle(fontWeight: FontWeight.bold , color: Colors.white,),),
         centerTitle: true,
         actions: [
-          IconButton(onPressed: () {},
+          IconButton(onPressed: () {
+            final result = Navigator.push(context, MaterialPageRoute(builder: (context){
+              return SearchDate();
+            }));
+
+            if(result != null){
+              getExpenses(selectedMonth.month, selectedMonth.year);
+            }
+
+          },
             icon: Icon(Icons.search),
             color: Colors.white),
           Padding(
@@ -310,9 +321,7 @@ class _MainPageState extends State<MainPage> {
                      ],
                    );
 
-
                  }),
-
             ),
 
             const Divider(height: 2,),
@@ -338,6 +347,11 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                   InkWell(
+                    onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context){
+                      return Charts();
+                    }));
+                    },
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15, top: 10),
                       child: SizedBox(
